@@ -15,9 +15,9 @@ export const getRestaurants = async (req: Request, res: Response): Promise<void>
 
     if (search) {
       queryObj.$or = [
-        { name: { $regex: search, $option: "i" } },
-        { tags: { $regex: search, $option: "i" } },
-        { location: { $regex: search, $option: "i" } },
+        { name: { $regex: search, $options: "i" } },
+        { tags: { $regex: search, $options: "i" } },
+        { location: { $regex: search, $options: "i" } },
       ];
     }
 
@@ -121,7 +121,7 @@ export const getRestaurantAvailability = async (req: Request, res: Response): Pr
 
     const restaurant = await Restaurant.findById(req.params.id);
     if (!restaurant) {
-      res.status(400).json({ message: "Please provide a date" });
+      res.status(404).json({ message: "Restaurant not found" });
       return;
     }
 
@@ -138,12 +138,12 @@ export const getRestaurantAvailability = async (req: Request, res: Response): Pr
     const availability = restaurant.availableSlots.map((slot) => {
       const bookedSeats = bookings.filter((b) => b.time === slot).reduce((sum, b) => sum + b.guests, 0);
       const totalSeats = restaurant.totalSeats || 20;
-      const avaialbleSeats = Math.max(0, totalSeats - bookedSeats);
+      const availableSeats = Math.max(0, totalSeats - bookedSeats);
 
       return {
         time: slot,
-        avaialbleSeats,
-        isAvailable: avaialbleSeats > 0,
+        availableSeats,
+        isAvailable: availableSeats > 0,
       };
     });
     res.json(availability);

@@ -49,4 +49,4 @@ const RestaurantSchema = new Schema<IRestaurant>(
   },
 );
 
-export const Restaurant = model<IRestaurant>("User", RestaurantSchema);
+export const Restaurant = model<IRestaurant>("Restaurant", RestaurantSchema);
